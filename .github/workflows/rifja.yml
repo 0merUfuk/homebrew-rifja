@@ -27,23 +27,17 @@ jobs:
           if [ "$RUNNER_OS" = Linux ]; then
             eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
           fi
-          # Refresh the runner image's package manager before testing the public tap.
+          # Refresh the runner image's package manager before testing this tap.
           brew update
-          # Direct installation trusts only the requested formula and taps implicitly.
-          brew install --verbose 0merUfuk/thematrix/rifja
+          # Current Homebrew requires trusting a non-core tap before its
+          # formulas load; installation then trusts only the requested formula.
+          brew trust --formula 0merUfuk/rifja/rifja
+          brew install --verbose 0merUfuk/rifja/rifja
           # Test this checked-out formula, including pull-request changes.
-          cp Formula/rifja.rb "$(brew --repository 0merUfuk/thematrix)/Formula/rifja.rb"
-          cp formula_renames.json "$(brew --repository 0merUfuk/thematrix)/formula_renames.json"
-          mkdir -p "$(brew --repository 0merUfuk/thematrix)/Aliases"
-          ln -sfn ../Formula/rifja.rb "$(brew --repository 0merUfuk/thematrix)/Aliases/session-visualizer"
-          brew reinstall --verbose 0merUfuk/thematrix/rifja
+          cp Formula/rifja.rb "$(brew --repository 0merUfuk/rifja)/Formula/rifja.rb"
+          brew reinstall --verbose 0merUfuk/rifja/rifja
           rifja --version
-          test "$(session-visualizer --version)" = "$(rifja --version)"
-          brew test 0merUfuk/thematrix/rifja
-          brew reinstall 0merUfuk/thematrix/rifja
-          brew uninstall --force 0merUfuk/thematrix/rifja
-          # Alias resolution requires explicit trust in its canonical target.
-          brew trust --formula 0merUfuk/thematrix/rifja
-          brew install 0merUfuk/thematrix/session-visualizer
+          brew test 0merUfuk/rifja/rifja
+          brew reinstall 0merUfuk/rifja/rifja
           rifja --version
-          brew uninstall --force 0merUfuk/thematrix/rifja
+          brew uninstall --force 0merUfuk/rifja/rifja
